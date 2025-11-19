@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Private Letter — Open with Secret Link</title>
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Dancing+Script&display=swap" rel="stylesheet">
+  <style>
+    :root{--bg:#f6f5f3;--envelope:#ffffff;--accent:#111;--paper:#fffefc}
+    *{box-sizing:border-box}
+    body{margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;background:linear-gradient(180deg,#f8f7f6, #efece8);font-family:'Playfair Display',serif;color:var(--accent);}
+
+    .stage{width:100%;max-width:720px;padding:32px}
+    .card{background:transparent;border-radius:12px;padding:28px;text-align:center}
+
+    /* LOCK SCREEN */
+    .locked{background:#fff;padding:36px;border-radius:12px;box-shadow:0 6px 24px rgba(13,12,11,0.06)}
+    .locked h1{margin:0 0 8px;font-size:20px}
+    .hint{color:#666;font-size:14px}
+
+    /* Envelope container */
+    .envelope-wrap{display:flex;align-items:center;justify-content:center;margin-top:14px}
+    .envelope{width:360px;height:220px;position:relative;perspective:1000px;cursor:pointer}
+
+    /* envelope body */
+    .back{position:absolute;inset:0;background:var(--envelope);border-radius:8px;box-shadow:0 10px 30px rgba(20,20,20,0.08);display:flex;align-items:center;justify-content:center;overflow:hidden}
+    .flap{position:absolute;left:0;right:0;top:0;height:50%;background:var(--envelope);border-top-left-radius:8px;border-top-right-radius:8px;transform-origin:top center;transition:transform 700ms cubic-bezier(.2,.9,.2,1)}
+
+    /* decorative line */
+    .back:before{content:'';position:absolute;left:0;right:0;top:50%;height:1px;background:linear-gradient(90deg,transparent,#eee,transparent)}
+
+    /* paper letter inside */
+    .letter{position:absolute;left:28px;right:28px;top:42px;height:140px;background:var(--paper);border-radius:6px;padding:26px;transform:translateY(220px);transition:transform 700ms cubic-bezier(.2,.9,.2,1);box-shadow:0 8px 20px rgba(12,11,10,0.06);font-size:16px;text-align:left}
+
+    /* when opened */
+    .envelope.open .flap{transform:rotateX(-180deg)}
+    .envelope.open .letter{transform:translateY(-12px)}
+
+    /* handwriting signature style */
+    .letter .body{font-family:Georgia,serif;color:#222;line-height:1.5;white-space:pre-wrap}
+    .signature{font-family:'Dancing Script',cursive;font-size:22px;margin-top:18px;display:block}
+
+    /* envelope shake animation (hover) */
+    .envelope:hover{animation:shake 600ms ease}
+    @keyframes shake{10%{transform:translateX(-4px)}30%{transform:translateX(3px)}50%{transform:translateX(-2px)}70%{transform:translateX(1px)}100%{transform:translateX(0)}}
+
+    /* small footer */
+    .foot{margin-top:18px;font-size:13px;color:#666}
+
+    /* responsive */
+    @media (max-width:480px){.envelope{width:92vw;height:56vw}.letter{top:38px;height:52vw;padding:18px}}
+
+    /* helper: visually-hidden */
+    .vh{position:absolute!important;height:1px;width:1px;overflow:hidden;clip:rect(1px,1px,1px,1px);white-space:nowrap}
+  </style>
+</head>
+<body>
+  <div class="stage">
+    <div id="lockedScreen" class="locked" style="display:none">
+      <h1>Private message</h1>
+      <p class="hint">This message is private. You must open it using the secret link the sender provided.</p>
+      <p class="hint">If you believe you have the correct link but still see this, ensure the link includes <code>?t=</code> followed by the secret token.</p>
+    </div>
+
+    <div id="envelopeArea" class="card" style="display:none">
+      <div style="text-align:center">
+        <h2 style="margin:0;font-weight:400">A Private Letter</h2>
+        <p style="margin:6px 0 18px;color:#666">Click the envelope to open</p>
+      </div>
+
+      <div class="envelope-wrap">
+        <div id="envelope" class="envelope" role="button" aria-label="Open letter">
+          <div class="back">
+            <div class="flap"></div>
+            <div class="letter" id="letter">
+              <div class="body" id="messageContent">
+                <!-- REPLACE THE MESSAGE BELOW: paste your full message inside the <div id="messageContent"> area. Keep formatting with line breaks. -->
+
+                Dear Monique,
+
+Strange, isn’t it?
+That the first letter I ever write to you will also be the last.
+For years, my feelings slipped out in fragments—through drunk calls, whispered confessions, and those quiet nights when missing you felt heavier than breathing. I used to think love was something that happened only to other people… until you proved me wrong. You were the first to my everything, and a part of me quietly hoped I would be your last.
+
+Maybe you don’t remember, but I think I know why I held on for so long. You once told me a story—about the ex before me. How you wanted to go back, only to find he had already moved on. That story etched itself into me. I never wanted you to come back and find me gone too. So I stayed. I waited. I became the man who couldn’t be moved.
+
+I don’t know if past me ever asked you for a hug. I hope he did—because I think he would regret it for the rest of his life if he didn’t. You were always free to refuse, of course. But I wish he had asked.
+
+About the money—I know you used it for what it was meant for. I know it can’t make up for the lifetime I won’t be there on your side of Connie, but I hope it lightened your load, even just a little.
+
+Thank you for staying in my life longer than you had to. Thank you for tolerating me, for holding space for me, even when what we had had become more memory than reality. I think I’m finally ready to step out of the cage I built—made of hope, fear, and what-ifs. I think I can finally walk forward.
+
+I’m sorry I grew tired. I’m sorry for what I didn’t do, for what I should’ve done. It hurts to accept that you are a chapter and not the whole book—but some chapters leave fingerprints on every page that follows. Yours will.
+
+The moon is still beautiful, isn’t it, Monique?
+It always will be.
+
+Keep chasing your dreams. I know you’ll carry that LPT with pride. <3
+I used the pen you gave me during my board exams. So I guess I have to honor my promise—and chase that MD next. Please take care of yourself. Don’t ever become my first patient.
+
+And if it’s true that life flashes in its final sixty seconds—if all the moments that mattered replay in one last flicker of light—I know you’ll be there in those final frames.
+
+Maybe the hardest part isn’t losing you. Maybe it’s letting go of the future I once built around your name.
+
+<span class="signature">— Khen</span>
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="foot">This file is a single downloadable HTML. For privacy, use a secret token appended as <code>?t=YOUR_TOKEN</code> when you host or share it.</div>
+    </div>
+
+  </div>
+
+  <script>
+    // === CONFIG — change these values as needed ===
+    // SECRET TOKEN: share this exact string with the person who should open the message
+    const SECRET = "r3l3aseX9kPz";
+    // If you want the letter to self-hide after first view, implement server logic after hosting.
+    // =================================================
+
+    function getParam(name){const urlParams = new URLSearchParams(window.location.search);return urlParams.get(name)}
+
+    function showLocked(){document.getElementById('lockedScreen').style.display='block';document.getElementById('envelopeArea').style.display='none'}
+    function showEnvelope(){document.getElementById('lockedScreen').style.display='none';document.getElementById('envelopeArea').style.display='block'}
+
+    // Check token
+    const token = getParam('t') || '';
+    if(token === SECRET){showEnvelope()}else{showLocked();}
+
+    // Interaction: clicking envelope toggles open
+    const env = document.getElementById('envelope');
+    env.addEventListener('click', ()=>{env.classList.toggle('open');
+      // If opened, set focus to letter for accessibility
+      if(env.classList.contains('open')){document.getElementById('letter').setAttribute('tabindex','-1');document.getElementById('letter').focus()}
+    });
+
+    // Accessibility: open with Enter/Space
+    env.addEventListener('keydown',(e)=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();env.click()}})
+  </script>
+
+  <!--
+    HOW TO USE (quick notes for you):
+    1) The file contains a SECRET token: "r3l3aseX9kPz" (change in the script if you want a different one).
+    2) When you host the HTML (GitHub Pages / Netlify / or any web host), share the full URL like:
+         https://your-site/path/final_message_envelope.html?t=r3l3aseX9kPz
+       Only people who open the page with the correct '?t=' value will see the envelope and message.
+    3) To change the displayed message, replace the placeholder text inside the <div id="messageContent"> element in this file.
+    4) If you want me to insert your final message now, paste it in the chat and I'll update the file for you.
+  -->
+</body>
+</html>
