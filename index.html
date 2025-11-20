@@ -5,8 +5,8 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>For Monique — Private Letter</title>
 
-  <!-- Homemade Apple (handwritten) -->
-  <link href="https://fonts.googleapis.com/css2?family=Homemade+Apple&display=swap" rel="stylesheet">
+  <!-- Charm (semi-calligraphy) -->
+  <link href="https://fonts.googleapis.com/css2?family=Charm&display=swap" rel="stylesheet">
 
   <style>
     :root{
@@ -99,7 +99,7 @@
       background:linear-gradient(180deg,#fffefc,#fffdf7);
       border-radius:6px;
       box-shadow:0 8px 20px rgba(12,11,10,0.06);
-      transform:translateY(220px);
+      transform:translateY(0); /* keep inside */
       transition:transform 700ms cubic-bezier(.2,.9,.2,1);
       padding:14px;
       text-align:left;
@@ -125,7 +125,7 @@
     .letter-page {
       position:fixed;
       inset:0;
-      display:flex;
+      display:none; /* hidden until envelope opened */
       align-items:flex-start;
       justify-content:center;
       padding:48px;
@@ -172,12 +172,12 @@
     }
 
     /* show letter */
-    .letter-page.show{opacity:1; pointer-events:auto}
+    .letter-page.show{display:flex; opacity:1; pointer-events:auto}
     .letter-page.show .letter-sheet{ transform:translateY(0); }
 
     /* Fonts and text styles */
     .letter-body{
-      font-family: 'Homemade Apple', Georgia, serif;
+      font-family: 'Charm', 'Georgia', serif;
       font-size:20px;
       color:var(--ink);
       white-space:pre-wrap;
@@ -196,7 +196,7 @@
       display:block;
       margin-top:26px;
       font-size:26px;
-      font-family:'Homemade Apple', Georgia, serif;
+      font-family:'Charm', Georgia, serif;
       color:var(--ink);
     }
 
@@ -271,7 +271,7 @@
   <div id="letterPage" class="letter-page" aria-hidden="true" role="dialog" aria-label="Private letter">
     <article class="letter-sheet" role="document" aria-live="polite">
       <div class="letter-head">For Monique</div>
-      <div class="letter-body" id="messageContent">
+      <div class="letter-body" id="messageContent" tabindex="-1">
 Dear Monique,
 
 Strange, isn’t it?
@@ -328,44 +328,44 @@ Maybe the hardest part isn’t losing you. Maybe it’s letting go of the future
       envelopeArea.style.display = 'none';
     }
 
-    // Open envelope -> show full-page letter
+    // Open envelope -> show full-page letter (Option A: letter hidden until flap animation ends)
     function openEnvelope() {
-      // Small guard to prevent repeated open animations
-      if (envelope.classList.contains('open')) {
-        // If already open, toggle letter visibility
-        showLetter();
-        return;
-      }
-      envelope.classList.add('open');
+      // prevent repeat
+      if (envelope.classList.contains('opening')) return;
+      envelope.classList.add('open','opening');
 
-      // after flap animation finishes, reveal full letter
-      setTimeout(showLetter, 900);
-    }
-
-    function showLetter() {
-      // show overlay sheet
-      letterPage.classList.add('show');
-      letterPage.setAttribute('aria-hidden', 'false');
-      closeBtn.classList.add('show');
-      closeBtn.setAttribute('aria-hidden', 'false');
-
-      // lock background scroll for mobile
-      document.documentElement.style.overflow = 'hidden';
-      document.body.style.overflow = 'hidden';
-
-      // set focus to the letter for accessibility
-      const firstFocusable = document.getElementById('messageContent');
-      if (firstFocusable) firstFocusable.focus?.();
+      // Wait for flap animation to finish, then reveal the full letter
+      const flapDuration = 900; // matches CSS transition (850ms)
+      setTimeout(() => {
+        // reveal the full-screen letter cleanly (no peeking)
+        letterPage.style.display = 'flex';
+        // allow next tick to apply fade transition
+        requestAnimationFrame(() => {
+          letterPage.classList.add('show');
+          letterPage.setAttribute('aria-hidden','false');
+          closeBtn.classList.add('show');
+          closeBtn.setAttribute('aria-hidden','false');
+          // prevent background scroll
+          document.documentElement.style.overflow = 'hidden';
+          document.body.style.overflow = 'hidden';
+          // focus letter for accessibility
+          const msg = document.getElementById('messageContent');
+          if (msg) msg.focus();
+        });
+        // remove opening flag after a bit so user can reopen if they close
+        setTimeout(()=> envelope.classList.remove('opening'), 600);
+      }, flapDuration);
     }
 
     function closeLetter() {
       letterPage.classList.remove('show');
-      letterPage.setAttribute('aria-hidden', 'true');
+      letterPage.setAttribute('aria-hidden','true');
       closeBtn.classList.remove('show');
-      closeBtn.setAttribute('aria-hidden', 'true');
+      closeBtn.setAttribute('aria-hidden','true');
       document.documentElement.style.overflow = '';
       document.body.style.overflow = '';
-      // keep envelope open visually, but letter hidden — user can reopen
+      // hide after transition to avoid accidental peek
+      setTimeout(()=>{ letterPage.style.display = 'none'; }, 700);
     }
 
     // events
